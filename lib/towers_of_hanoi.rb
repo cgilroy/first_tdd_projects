@@ -21,6 +21,21 @@ class Board
         end
     end
 
+    def render
+        transposed_cols = @columns.transpose
+        transposed_cols.each do |print_row|
+            print_string = ""
+            print_row.each do |char|
+                if char.nil? then
+                    print_string += "_ "
+                else
+                    print_string = char.to_s + " "
+                end
+            end
+            puts print_string
+        end
+    end
+
 end
 
 class Disc
