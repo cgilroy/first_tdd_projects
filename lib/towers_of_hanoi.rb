@@ -9,28 +9,38 @@ end
 
 class Board
     attr_accessor :columns
-    def initialize
-        @columns = Array.new(3) { Array.new(4) }
+    def initialize(size)
+        @size = size
+        @columns = Array.new(3) { Array.new(size) }
         fill_board
     end
 
     def fill_board
         disc_size = 1
         @columns[0].each_with_index do |_,index|
-            # @columns[0][index] = Disc.new(disc_size,[0,index])
             self[[0,index]] = Disc.new(disc_size,[0,index])
             disc_size += 1
         end
     end
 
     def move(from,to)
-        debugger
+        # debugger
         from_item = pickup_disc(from)
         raise ArgumentError.new "Invalid pickup column" if from_item == nil
         place_index = place_index(from_item,to)
         self[place_index] = from_item
         self[from_item.pos] = nil
         from_item.pos = place_index
+    end
+
+    def won?
+        return true if @columns.last() == [1..@size]
+        last_col = @columns.last()
+        last_col.each_with_index do |item,index|
+            return false if item.nil?
+            return false if item.size != index+1
+        end 
+        true
     end
 
     def []=(pos,val)
