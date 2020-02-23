@@ -2,8 +2,26 @@ require_relative 'array_methods'
 require 'byebug'
 
 class Game
-    def initialize
-        @board = Board.new
+    def initialize(size)
+        @board = Board.new(size)
+    end
+
+    def play
+        while !@board.won? do
+            @board.render
+            puts "Whats the move man?"
+            move = gets.chomp.split(",").map(&:to_i)
+            # debugger
+            begin
+                @board.move(*move)
+            rescue => exception
+                puts exception.message
+                sleep(2)
+            end
+            system 'clear'
+        end
+        @board.render
+        puts "WINNER"
     end
 end
 
@@ -57,7 +75,7 @@ class Board
         col.each_with_index do |item,index|
             if item.is_a?(Disc)
                 raise ArgumentError.new "Stack is full" if index == 0
-                raise ArgumentError.new "Cannot place disc on larger disc" if item.size < move_item.size
+                raise ArgumentError.new "Cannot place disc on smaller disc" if item.size < move_item.size
                 return place_index
             else
                 place_index = [to_column,index]
